@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: A simple CloudFormation template to create an ECS Cluster
+
+Resources:
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: OPAHookBugBashCluster
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
+      Configuration:
+        ExecuteCommandConfiguration:
+          LoggingConfiguration:
+            CloudWatchLogGroupName: /ecs/execute-command
+            CloudWatchEncryptionEnabled: true
+            S3BucketName: my-execute-command-logs
+            S3EncryptionEnabled: true
+            S3KeyPrefix: execute-command
+      Tags:
+        - Key: Environment
+          Value: Production
