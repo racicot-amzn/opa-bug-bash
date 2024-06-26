@@ -1,0 +1,12 @@
+{
+    "CloudFormationConfiguration": {
+        "HookConfiguration": {
+            "TargetStacks": "ALL",
+            "Properties": {
+                "bundleLocation": "s3://racicot-arrow-testing/opa-bug-bash/ecs-cluster.tar.gz",
+                "resultQuery": "data.test.allow"
+            },
+            "FailureMode": "WARN"
+        }
+    }
+}

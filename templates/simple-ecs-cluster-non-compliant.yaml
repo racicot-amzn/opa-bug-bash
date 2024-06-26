@@ -5,10 +5,10 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: OPAHookBugBashCluster
+      ClusterName: OPAHookBugBashClusterShouldFail
       ClusterSettings:
         - Name: containerInsights
-          Value: enabled
+          Value: disabled
       Tags:
         - Key: Environment
           Value: Production

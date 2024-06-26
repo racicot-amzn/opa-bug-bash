@@ -2,15 +2,13 @@
 
 # Define the usage function
 usage() {
-    echo "Usage: $0 --dir <dir_name> --bucket <s3_bucket_name> --result-query <result_query> --hook-arn <hook_arn>"
+    echo "Usage: $0 --dir <dir_name> --result-query <result_query>"
     exit 1
 }
 
 # Initialize variables
 dir_name=""
-s3_bucket_name=""
 result_query=""
-hook_arn=""
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
@@ -19,16 +17,8 @@ while [[ $# -gt 0 ]]; do
             dir_name="$2"
             shift 2
             ;;
-        --bucket)
-            s3_bucket_name="$2"
-            shift 2
-            ;;
         --result-query)
             result_query="$2"
-            shift 2
-            ;;
-        --hook-arn)
-            hook_arn="$2"
             shift 2
             ;;
         *)
@@ -39,8 +29,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Check if required arguments are provided
-if [[ -z "$dir_name" || -z "$s3_bucket_name" || -z "$result_query" ]]; then
-    echo "Error: All arguments (--dir, --bucket, --result-query) are required."
+if [[ -z "$dir_name" || -z "$result_query" ]]; then
+    echo "Error: All arguments (--dir and --result-query) are required."
     usage
 fi
 
@@ -57,23 +47,23 @@ if [ $? -ne 0 ]; then
 fi
 
 # Upload the tar.gz file to S3
-aws s3 cp "$bundle_file_name" "s3://$s3_bucket_name/opa-bug-bash/$bundle_file_name"
+aws s3 cp "$bundle_file_name" "s3://$OPA_BUG_BASH_S3_BUCKET/opa-bug-bash/$bundle_file_name"
 
 # Check if the upload was successful
 if [ $? -ne 0 ]; then
-    echo "Error: Failed to upload $tar_gz_file to s3://$s3_bucket_name/opa-bug-bash/$bundle_file_name"
+    echo "Error: Failed to upload $tar_gz_file to s3://$OPA_BUG_BASH_S3_BUCKET/opa-bug-bash/$bundle_file_name"
     exit 1
 fi
 
 # Output the S3 URI of the uploaded object
-s3_uri="s3://$s3_bucket_name/opa-bug-bash/$bundle_file_name"
+s3_uri="s3://$OPA_BUG_BASH_S3_BUCKET/opa-bug-bash/$bundle_file_name"
 
 # Define the JSON structure with placeholders
 type_config=$(cat << EOF
 {
     "CloudFormationConfiguration": {
         "HookConfiguration": {
-            "TargetStacks": "NONE",
+            "TargetStacks": "ALL",
             "Properties": {
                 "bundleLocation": "$s3_uri",
                 "resultQuery": "$result_query"
@@ -88,4 +78,4 @@ EOF
 # Write the output to a new file
 echo "$type_config" > typeConfiguration.json
 
-aws cloudformation set-type-configuration --configuration file://typeConfiguration.json --type-arn $hook_arn --region us-east-1  
+aws cloudformation set-type-configuration --configuration file://typeConfiguration.json --type-arn $OPA_BUG_BUSH_HOOK_ARN --region us-east-1  
