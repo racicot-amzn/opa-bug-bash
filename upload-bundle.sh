@@ -37,7 +37,7 @@ fi
 bundle_file_name="$dir_name.tar.gz"
 
 # Build the OPA file
-opa_build_output="$(opa build -b $dir_name -o $bundle_file_name)"
+opa_build_output="$(opa build $dir_name -o $bundle_file_name)"
 
 # Check if the build was successful
 if [ $? -ne 0 ]; then

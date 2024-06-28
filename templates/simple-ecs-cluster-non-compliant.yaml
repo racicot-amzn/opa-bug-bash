@@ -5,7 +5,7 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: OPAHookBugBashClusterShouldFail
+      ClusterName: !Sub 'OPAHookBugBashCluster-${AWS::StackName}'
       ClusterSettings:
         - Name: containerInsights
           Value: disabled

@@ -7,7 +7,8 @@ result := {
   "violations": violations
 }
 
-violations contains "ECS Cluster container insights not enabled" if {
+violations contains msg if {
+  msg := sprintf("ECS Cluster container insights not enabled for: %s", [input.resourceProperties.ClusterName])
   not settings_has_container_insights_enabled(input.resourceProperties.ClusterSettings)
 }
 
