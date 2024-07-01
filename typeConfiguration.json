@@ -3,7 +3,7 @@
         "HookConfiguration": {
             "TargetStacks": "ALL",
             "Properties": {
-                "bundleLocation": "s3://racicot-arrow-testing/opa-bug-bash/loadjson.tar.gz",
+                "bundleLocation": "s3://racicot-arrow-testing/opa-bug-bash/http.tar.gz",
                 "resultQuery": "data.test.result"
             },
             "FailureMode": "WARN"
