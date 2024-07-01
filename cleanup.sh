@@ -4,16 +4,20 @@
 PREFIX="opa-bug-bash/"
 
 # List all objects in the specified prefix
-OBJECTS=$(aws s3 ls "s3://$OPA_BUG_BASH_S3_BUCKET/$PREFIX" --recursive --human-readable --summarize | grep "Total Objects" | awk '{print $3}')
+OBJECTS=$(aws s3 ls "s3://$OPA_BUG_BASH_S3_BUCKET/$PREFIX" --recursive --human-readable)
 
 # Check if there are any objects to delete
-if [ "$OBJECTS" -eq 0 ]; then
+if [ -z "$OBJECTS" ]; then
     echo "No objects found in the $PREFIX folder."
     exit 0
 fi
 
+# Print the list of objects to be deleted
+echo "The following objects will be deleted from the $PREFIX folder in the $OPA_BUG_BASH_S3_BUCKET bucket:"
+echo "$OBJECTS"
+
 # Prompt for confirmation
-read -p "Are you sure you want to delete $OBJECTS objects from the $PREFIX folder in the $BUCKET_NAME bucket? (y/n) " -n 1 -r
+read -p "Are you sure you want to delete these objects? (y/n) " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "Aborting."
