@@ -33,3 +33,27 @@ if [ $? -eq 0 ]; then
 else
     echo "Failed to delete objects."
 fi
+
+echo "Disabling the hook..."
+
+# Define the JSON structure with placeholders
+type_config=$(cat << EOF
+{
+    "CloudFormationConfiguration": {
+        "HookConfiguration": {
+            "TargetStacks": "NONE",
+            "Properties": {
+                "bundleLocation": "$s3_uri",
+                "resultQuery": "$result_query"
+            },
+            "FailureMode": "WARN"
+        }
+    }
+}
+EOF
+)
+
+# Write the output to a new file
+echo "$type_config" > typeConfiguration.json
+
+aws cloudformation set-type-configuration --configuration file://typeConfiguration.json --type-arn $OPA_BUG_BUSH_HOOK_ARN --region us-east-1  
